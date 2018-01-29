@@ -16,7 +16,7 @@
         {% endset %}
         {{ layout.content_block('summary', content) }}
 
-        {% for type in data|keys %}
+        {% for type in vc.rfxs %}
             {% set content %}
                 {# TODO: Pie chart here #}
                 <div class="col-lg-6 stat-list clearfix">
@@ -28,7 +28,7 @@
                         <tr>
                             <td>{{ msg('rfx-total-votes') }}</td>
                             <td>
-                                {{ totals[type].total|num_format }}
+                                {{ vc.totals[type].total|num_format }}
                             </td>
                         </tr>
                         {% for voteType in data[type]|keys %}

@@ -8,8 +8,8 @@ parameters:
         - "neutral"
         - "comments"
       pages:
-        rfa: "Project:Requests for adminship"
-        rfb: "Project:Requests for bureaucratship"
+        rfa: "Requests for adminship"
+        rfb: "Requests for bureaucratship"
       excluded_title:
         - "Requests_for_adminship/RfA_and_RfB_Report"
         - "Requests_for_adminship/BAG"

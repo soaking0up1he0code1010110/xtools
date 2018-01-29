@@ -73,7 +73,7 @@
                     <li>
                         {{ wiki.userLink(username, project) }}
                         {% if username in duplicates %}
-                            <span class="text-danger">({{ msg("duplicate-vote")|lower }})</span>
+                            <span class="text-danger">({{ msg('duplicate-vote')|lower }})</span>
                         {% endif %}
                     </li>
                 {% endfor %}

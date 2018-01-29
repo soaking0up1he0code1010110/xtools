@@ -175,6 +175,17 @@ class Page extends Model
     }
 
     /**
+     * Get the wikitext content of the page.
+     * @return string
+     */
+    public function getContent()
+    {
+        return array_values(
+            $this->getRepository()->getPagesWikitext($this->project, [$this->getTitle()])
+        )[0];
+    }
+
+    /**
      * Get the HTML content of the body of the page.
      * @param DateTime|int $target If a DateTime object, the
      *   revision at that time will be returned. If an integer, it is

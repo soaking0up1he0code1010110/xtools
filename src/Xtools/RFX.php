@@ -1,39 +1,59 @@
 <?php
 /**
- * An RFX object contains the parsed information for an RFX
+ * An RFX object contains the parsed information for an RfX.
  */
 
 namespace Xtools;
 
+use Symfony\Component\DependencyInjection\Container;
+
 /**
  * This class contains information about a single RfX page.
  */
-class RFX
+class RfX
 {
-    /**
-     * @var array Data we parsed out of the page text
-     */
+    /** @var Container The DI container. */
+    protected $container;
+
+    /** @var Page Page object for the RfX. */
+    protected $page;
+
+    /** @var string[] RfX configuration. */
+    protected $config;
+
+    /** @var array Data we parsed out of the page text. */
     private $data;
 
-    /**
-     * @var array Duplicate voters
-     */
+    /** @var array Duplicate voters. */
     private $duplicates;
 
-    /**
-     * @var null|string Username of the user we're looking for.
-     */
+    /** @var null|string Username of the user we're looking for. */
     private $userLookingFor;
 
-    /**
-     * @var string Section we found the user we're looking for
-     */
+    /** @var string Section we found the user we're looking for */
     private $userSectionFound;
 
-    /**
-     * @var string Ending date of the RFX
-     */
+    /** @var string Ending date of the RFX. */
     private $endDate;
+
+    /**
+     * RFX constructor.
+     *
+     * @param Container $container The DI container.
+     * @param Page $page
+     * @param string[] $config RfX configuration.
+     */
+    public function __construct(
+        Container $container,
+        Page $page,
+        $config
+    ) {
+        $this->container = $container;
+        $this->page = $page;
+        $this->config = $config;
+
+        $this->prepareData($page->getContent(), $config['date_regexp']);
+    }
 
     /**
      * Attempts to find a signature in $input using the default regex.
@@ -77,21 +97,22 @@ class RFX
      * This function parses the wikitext and stores it within this function.
      * It's been split out to make this class testable
      *
-     * @param array  $sectionArray Section names that we're looking for
      * @param string $rawWikiText  The text of the page we're parsing
      * @param string $dateRegexp   Valid Regular Expression for the end date
      *
      * @return null
      */
-    private function setUp($sectionArray, $rawWikiText, $dateRegexp)
+    private function prepareData($rawWikiText, $dateRegexp)
     {
-        $this->data = array();
+        $this->data = [];
+
+        var_dump($rawWikiText);
 
         $lines = explode("\n", $rawWikiText);
 
-        $keys = join("|", $sectionArray);
+        $keys = join('|', $this->getSectionNames());
 
-        $lastSection = "";
+        $lastSection = '';
 
         foreach ($lines as $line) {
             if (preg_match("/={1,6}\s?($keys)\s?={1,6}/i", $line, $matches)) {
@@ -138,27 +159,6 @@ class RFX
     }
 
     /**
-     * RFX constructor.
-     *
-     * @param string      $rawWikiText    The text of the page we're parsing
-     * @param array       $sectionArray   Section names that we're looking for
-     * @param string      $userNamespace  Plain text of the user namespace
-     * @param string      $dateRegexp     Valid Regular Expression for the end date
-     * @param string|null $userLookingFor User we're trying to find.
-     */
-    public function __construct(
-        $rawWikiText,
-        $sectionArray = ["Support", "Oppose", "Neutral"],
-        $userNamespace = "User",
-        $dateRegexp = "final .*end(?:ing|ed)?(?: no earlier than)? (.*?)? \(UTC\)",
-        $userLookingFor = null
-    ) {
-        $this->userLookingFor = $userLookingFor;
-
-        $this->setUp($sectionArray, $rawWikiText, $dateRegexp);
-    }
-
-    /**
      * Which section we found the user we're looking for.
      *
      * @return string
@@ -166,6 +166,15 @@ class RFX
     public function getUserSectionFound()
     {
         return $this->userSectionFound;
+    }
+
+    /**
+     * Get the titles of the sections that make up an RfX.
+     * @return string[]
+     */
+    private function getSectionNames()
+    {
+        return $this->config['sections'];
     }
 
     /**
