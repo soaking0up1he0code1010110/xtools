@@ -670,13 +670,13 @@ class EditCounterTest extends WebTestCase
         // Current rights.
         $this->assertEquals(
             ['sysop', 'bureaucrat'],
-            $this->editCounter->getRightsStates()['current']
+            $this->editCounter->getRightsHistory()['current']
         );
 
         // Former rights.
         $this->assertEquals(
             ['rollbacker', 'templateeditor', 'ipblock-exempt', 'filemover'],
-            $this->editCounter->getRightsStates()['former']
+            $this->editCounter->getRightsHistory()['former']
         );
 
         // Admin status.

@@ -35,8 +35,8 @@
                             <tr>
                                 <td>{{ msg(state ~ '-user-groups') }}</td>
                                 <td>
-                                    {% set localList = ec.rightsStates[state] %}
-                                    {% set globalList = ec.globalRightsStates[state] %}
+                                    {% set localList = ec.rightsStates.local[state] %}
+                                    {% set globalList = ec.rightsStates.global[state] %}
                                     {% if localList|merge(globalList)|length  == 0 %}
                                         <em class="text-muted">{{ msg('none') }}</em>
                                     {% else %}
